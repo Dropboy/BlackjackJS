@@ -1,0 +1,88 @@
+html {
+    height: 100%
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100%;
+}
+
+* {
+    text-align: center;
+    margin: 0;
+    background-color: #000000;
+}
+
+button {
+    all: unset;
+}
+
+section {
+    height: 1fr;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+p {
+    width: max-content;
+    font-family: "Rubik", sans-serif;
+    color: #ffffff;
+    padding: 0rem 1rem;
+}
+
+.gameContainer {
+    height: 100%;
+    flex-direction: column;
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+}
+
+.gameTextContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 2rem;
+}
+
+.gameText {
+    font-size: 1.3vw;
+}
+
+.blackjackButton {
+    font-family: "Rubik", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+    font-size: 2vw;
+    width: 18vw;
+    height: 4vw;
+    background-color: #000000;
+    color: #ffffff;
+    border: 5px solid #ffffff;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.blackjackButton:hover {
+    cursor: pointer;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+@media all and (max-width: 1000px) {
+    .blackjackButton {
+        font-size: 4vw;
+        width: 40vw;
+        height: 10vw;
+    }
+}

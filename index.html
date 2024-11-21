@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <title>Blackjack</title>
+
+        <script src="blackjack.js" defer></script>
+        <link rel="stylesheet" href="styles.css" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet" />
+        <script src="//cdn.jsdelivr.net/npm/phaser@3.86.0/dist/phaser.js"></script>
+    </head>
+
+    <body>
+        <section class="gameContainer">
+            <section class="gameTextContainer">
+                <p class="gameText" id="Wins">Wins: 0</p>
+                <p class="gameText" id="Streak">Streak: 0</p>
+                <p class="gameText" id="Losses">Losses: 0</p>
+            </section>
+            <section>
+                <button class="blackjackButton" onclick="{blackjack()}">PRESS TO PLAY</button>
+            </section>
+        </section>
+    </body>
+</html>
