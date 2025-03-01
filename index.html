@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack Game</title>
+    <link href="styles.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-        <title>Blackjack</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    
+    <script src="/classes/Card.js"></script>
+    <script src="/classes/Hand.js"></script>
+    <script src="/classes/Chip.js"></script>
+    <script src="/classes/Button.js"></script>
+    <script src="/classes/DropZone.js"></script>
+    
+    <script src="/utils/gameUtils.js"></script>
+    
+    <script src="/scenes/BootScene.js"></script>
+    <script src="/scenes/PreloaderScene.js"></script>
+    <script src="/scenes/Blackjack.js"></script>
+    
+    <script src="/config.js"></script>
+    
+    <script src="/main.js"></script>
+</head>
+<body>
 
-        <script src="blackjack.js" defer></script>
-        <link rel="stylesheet" href="styles.css" />
-
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet" />
-        <script src="//cdn.jsdelivr.net/npm/phaser@3.86.0/dist/phaser.js"></script>
-    </head>
-
-    <body>
-        <section class="gameContainer">
-            <section class="gameTextContainer">
-                <p class="gameText" id="Wins">Wins: 0</p>
-                <p class="gameText" id="Streak">Streak: 0</p>
-                <p class="gameText" id="Losses">Losses: 0</p>
-            </section>
-            <section>
-                <button class="blackjackButton" onclick="{blackjack()}">PRESS TO PLAY</button>
-            </section>
-        </section>
-    </body>
+</body>
 </html>
