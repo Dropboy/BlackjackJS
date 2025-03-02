@@ -12,6 +12,7 @@ class Blackjack extends Phaser.Scene {
     }
 
     create() {
+
         // Reset game state variables
         let bust = false;
         userHand = [];
@@ -22,14 +23,14 @@ class Blackjack extends Phaser.Scene {
         const bg = this.add.image(0, 0, "bg").setOrigin(0, 0);
         
         // Add bet text
-        let betText = this.add.text(50, 950, "Bet Money: " + "0", {
+        let betText = this.add.text(50, 100, "Bet Money: " + "0", {
             fontFamily: "Noto Serif",
             fontSize: 64,
             color: "#FFFFFF"
         })
         .setDepth(100)
 
-        let playerMoneyText = this.add.text(50, 850, "Player Money: " + this.playerMoney, {
+        let playerMoneyText = this.add.text(50, 200, "Player Money: " + this.playerMoney, {
             fontFamily: "Noto Serif",
             fontSize: 64,
             color: "#FFFFFF",
@@ -45,7 +46,8 @@ class Blackjack extends Phaser.Scene {
             900,
             1000,
             TEXTURES.HANDS.OPEN,
-            TEXTURES.HANDS.CLOSED
+            TEXTURES.HANDS.CLOSED,
+            TEXTURES.HANDS.POINTING,
         );
 
         // Create drop zone for chips
@@ -55,11 +57,25 @@ class Blackjack extends Phaser.Scene {
         this.hitButton = new Button(
             this,
             700,
-            500,
+            550,
             10,
             10,
             TEXTURES.BUTTONS.HIT,
             hit,
+            userHand,
+            deck,
+            dealerHand,
+            this
+        );
+
+        this.standButton = new Button(
+            this,
+            1100,
+            550,
+            10,
+            10,
+            TEXTURES.BUTTONS.STAND,
+            stand,
             userHand,
             deck,
             dealerHand,

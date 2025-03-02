@@ -8,6 +8,8 @@ const TEXTURES = {
 	HANDS: {
 		OPEN: "hand",
 		CLOSED: "handClosed",
+		POINTING: "handPointing",
+		PALM: "hand",
 	},
 	BUTTONS: {
 		HIT: "hit",
@@ -206,7 +208,7 @@ function animateCards(scene) {
 		scene.tweens.add({
 			targets: userHand[i],
 			x: 800 + i * cardOffsetX,
-			y: 850,
+			y: 900,
 			ease: "Power1",
 			duration: 200,
 			delay: 0,
@@ -217,7 +219,7 @@ function animateCards(scene) {
 		scene.tweens.add({
 			targets: dealerHand[i],
 			x: 800 + i * cardOffsetX,
-			y: 200,
+			y: 180,
 			ease: "Power1",
 			duration: 200,
 			delay: 0,

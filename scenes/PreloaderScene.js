@@ -57,7 +57,9 @@ class PreloaderScene extends Phaser.Scene {
         this.load.image(TEXTURES.CHIPS.TEN, "gameAssets_chipTen.png");
         this.load.image(TEXTURES.HANDS.OPEN, "gameAssets_Hand.png");
         this.load.image(TEXTURES.HANDS.CLOSED, "gameAssets_HandClosed.png");
-        this.load.image("hit", "hit.png");
+        this.load.image(TEXTURES.HANDS.POINTING, "gameAssets_HandPointing.png");
+        this.load.image(TEXTURES.BUTTONS.HIT, "gameAssets_HitButton.png");
+        this.load.image(TEXTURES.BUTTONS.STAND, "gameAssets_StandButton.png");
         this.load.image("bg", "gameAssets_Table.png");
     }
 

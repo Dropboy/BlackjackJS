@@ -18,7 +18,7 @@ class DropZone {
 	}
 
 	// debug zone drawing methods
-	drawZone() {
+	drawZone() {	
 		this.graphics.strokeRect(
 			this.zone.x - this.zone.width / 2,
 			this.zone.y - this.zone.height / 2,
@@ -37,9 +37,9 @@ class DropZone {
 		this.drawZone();
 	}
 
-	updateBet(scene, gameObject, betText, isAdding) {
+	updateBet(gameObject, betText, isAdding) {
 		betText.setText(
-			Number(scene.betText) + (isAdding ? gameObject.value : -gameObject.value)
+			Number(betText.text) + (isAdding ? gameObject.value : -gameObject.value)
 		);
 	}
 

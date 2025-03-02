@@ -1,50 +1,72 @@
-// Hand Class
 class Hand {
-    constructor(scene, x, y, openTexture, closedTexture) {
-        this.sprite = scene.add.image(x, y, openTexture);
+  constructor(scene, x, y, openTexture, closedTexture, pointingTexture) {
+    this.sprite = scene.add.image(x, y, openTexture);
 
-        this.sprite.setDepth(70);
-        this.heldObject = null;
+    this.sprite.setDepth(70);
 
-        this.targetX = x;
-        this.targetY = y;
+    this.handFX = this.sprite.postFX.addShadow(1, 1, 0.05, 1, 0x000000, 4);
 
-        this.pointerMechanics(scene, this.sprite, openTexture, closedTexture);
-        this.setupDragMechanics(scene);
-    }
+    this.heldObject = null;
 
-    pointerMechanics(scene, sprite, openTexture, closedTexture) {
-        // Hand follows cursor smoothly
-        scene.input.on("pointermove", (pointer) => {
-            this.targetX = pointer.worldX - 45;
-            this.targetY = pointer.worldY + 500;
-        });
+    this.targetX = x;
+    this.targetY = y;
 
-        // Hand closed on click
-        scene.input.on("pointerdown", (pointer, gameObject, Object) => {
-            this.sprite.setTexture(closedTexture);
-        });
+    this.setupCursorEvents(scene, pointingTexture, openTexture);
+    this.pointerMechanics(scene, openTexture, closedTexture, pointingTexture);
+    this.setupDragMechanics(scene);
+  }
 
-        // Hand open on release
-        scene.input.on("pointerup", () => {
+  pointerMechanics(scene, openTexture, closedTexture, pointingTexture) {
+    // Hand follows cursor smoothly
+    scene.input.on("pointermove", (pointer) => {
+      this.targetX = pointer.worldX - -100;
+      this.targetY = pointer.worldY + 750;
+    });
+
+    // Hand closed on click
+    scene.input.on("pointerdown", (pointer, gameObject, Object) => {
+      if (this.heldObject == null) {
+        this.sprite.setTexture(pointingTexture)
+        this.sprite.setScale(0.95)
+      } else {
+        this.sprite.setTexture(closedTexture);
+      }
+    });
+
+    // Hand open on release
+    scene.input.on("pointerup", () => {
+      this.sprite.setScale(1)
+      this.heldObject = null; // Release chip when mouse is released
+    });
+  }
+
+  setupCursorEvents(scene, pointingTexture, openTexture) {
+    scene.input.on("gameobjectover", (pointer, gameObject) => {
+        if (this.heldObject == null) {
+            this.sprite.setTexture(pointingTexture);
+        }
+    });
+
+    scene.input.on("gameobjectout", (pointer, gameObject) => {
+        if (this.heldObject == null) {
             this.sprite.setTexture(openTexture);
-            this.heldObject = null; // Release chip when mouse is released
-        });
-    }
+        }
+    });
+  }
 
-    setupDragMechanics(scene) {
-        scene.input.on("dragstart", (pointer, gameObject, object) => {
-            this.heldObject = gameObject;
-            gameObject.setDepth(60);
-            // if my data object is empty
-            if (gameObject.data) {
-                console.log(gameObject.data.list);
-            }
-        });
+  setupDragMechanics(scene) {
+    scene.input.on("dragstart", (pointer, gameObject, object) => {
+      this.heldObject = gameObject;
+      gameObject.setDepth(60);
+      // if my data object is empty
+      if (gameObject.data) {
+        console.log(gameObject.data.list);
+      }
+    });
 
-        scene.input.on("dragend", (pointer, gameObject) => {
-            this.heldObject = null; // Assign the dragged object
-            gameObject.setDepth(2);
-        });
-    }
+    scene.input.on("dragend", (pointer, gameObject) => {
+      this.heldObject = null; // Assign the dragged object
+      gameObject.setDepth(2);
+    });
+  }
 }
