@@ -17,218 +17,11 @@ const TEXTURES = {
 	},
 };
 
-// Game state variables (moved from global scope)
-let userHand = [];
-let dealerHand = [];
-let deck = [];
-
-// Calculate points of a hand
-function calculatePoints(hand) {
-	let points = 0;
-
-	// loops through hand argument and adds all card values together
-	for (let card of hand) {
-		points += card.data.list.value;
-	}
-	return points;
-}
-
-function bustText(hand, scene) {
-
-	const textBackground = scene.add.graphics();
-
-	textBackground.fillStyle(0x000000, 0.7); // Black with 70% opacity
-
-	const centerX = 1920 / 2;
-	const centerY = 1080 / 2;
-	const width = 1300;
-	const height = 175;
-
-	textBackground.fillRoundedRect(
-		centerX - width / 2,
-		centerY - height / 2,
-		width,
-		height,
-		20 // Corner radius - makes rounded corners
-	);
-
-	// Set depth so it appears below the text
-	textBackground.setDepth(99);
-
-	if (hand == userHand) {
-		scene.add
-			.text(1920 / 2, 1080 / 2, "YOU HAVE BUST :(", {
-				fontFamily: "Noto Serif",
-				fontSize: 128,
-				color: "#FFFFFF",
-			})
-			.setDepth(100)
-			.setOrigin(0.5, 0.5);
-	} else {
-		scene.add
-			.text(1920 / 2, 1080 / 2, "DEALER HAS BUST", {
-				fontFamily: "Noto Serif",
-				fontSize: 128,
-				color: "#FFFFFF",
-			})
-			.setDepth(100)
-			.setOrigin(0.5, 0.5);
-	}
-
-	// After 2 seconds, restart with data
-	scene.time.delayedCall(2000, () => {
-		scene.scene.start(scene.scene.key, {
-			gamesPlayed: (scene.gamesPlayed || 0) + 1,
-			playerMoney: scene.playerMoney + scene.bet,
-			bust: false
-			// other data you want to preserve
-		});
-	});
-}
-
-// Check for bust or blackjack
-function checkBust(userHand, dealerHand, scene) {
-	console.log(calculatePoints(userHand))
-	if (calculatePoints(userHand) > 21) {
-		bustText(userHand, scene);
-	} else if (calculatePoints(dealerHand) > 21) {
-		bustText(dealerHand, scene);
-	}
-}
-
-function checkAce(hand) {
-	console.log("checking ace");
-
-	if (hand.some((card) => card.data.rank === "Ace")) {
-		console.log("found an ace");
-		return true;
-	} else {
-		convertAce(hand);
-		return false;
-	}
-}
-
-function checkHit(userHand, dealerHand) {
-	let userHandHit = null;
-	let dealerHandHit = null;
-
-	// Function to determine hit flag based on hand type and value
-	const determineHitFlag = (hand, isDealer) => {
-		const points = calculatePoints(hand);
-
-		if (points > 21) {
-			return false; // Bust - cannot hit
-		} else if (isDealer && points >= 17) {
-			return false; // Dealer stands on 17+
-		} else {
-			return true; // Can hit (player's choice or dealer must hit on <17)
-		}
-	};
-
-	// Apply the same logic to both hands
-	userHandHit = determineHitFlag(userHand, false);
-	dealerHandHit = determineHitFlag(dealerHand, true);
-
-	switch (true) {
-		case userHandHit == true && dealerHandHit == true:
-			userHand.push(deck.pop());
-			dealerHand.push(deck.pop());
-			break;
-		case userHandHit == true && dealerHandHit == false:
-			userHand.push(deck.pop());
-			break;
-		case userHandHit == false && dealerHandHit == true:
-			dealerHand.push(deck.pop());
-			break;
-	}
-
-}
-
-function convertAce(hand) {
-	hand.map((card) => {
-		// only convert ace if hand is over 21
-		if (calculatePoints(hand) > 21) {
-			// Only convert ace if value is not already 1
-			if (card.data.rank == "Ace" && card.data.value != 1) {
-				console.log("Ace conversion called...");
-				card.value = 1;
-			}
-		}
-		return;
-	});
-}
-
-function stand() {
-	// if user hits stand button, their hit flag should be set to false
-	// run checkhit function to check if dealer should hit
-	// if it should play out round
-	// otherwise begin end game logic
-}
-
-function deal(scene) {
-	console.log("Dealing...");
-	userHand.push(deck.pop());
-	userHand.push(deck.pop());
-	dealerHand.push(deck.pop());
-	dealerHand.push(deck.pop());
-	animateCards(scene);
-	// userHand.forEach((card) => console.log(card.data.list));
-	userHand.forEach((card) => card.setInteractive({ draggable: true }));
-	userHand.forEach((card, index) => card.setDepth(index));
-	dealerHand.forEach((card, index) => card.setDepth(index));
-}
-
-// Hit action
-function hit(userHand, deck, dealerHand, scene) {
-	console.log("user hit");
-
-	userHandHit = true;
-
-	// check if either user or dealer should hit
-
-	checkHit(userHand, dealerHand);
-
-	animateCards(scene);
-
-	// userHand.forEach((card) => console.log(card.data.list));
-	userHand.forEach((card) => card.setInteractive({ draggable: true }));
-	userHand.forEach((card, index) => card.setDepth(index));
-	dealerHand.forEach((card, index) => card.setDepth(index));
-
-	console.log("Dealer's Hand Value: " + calculatePoints(dealerHand));
-	console.log("Player's Hand Value: " + calculatePoints(userHand));
-
-	checkBust(userHand, dealerHand, scene);
-}
-
-function animateCards(scene) {
-	const cardOffsetX = 80;
-
-	for (let i = 0; i < userHand.length; i++) {
-		scene.tweens.add({
-			targets: userHand[i],
-			x: 800 + i * cardOffsetX,
-			y: 900,
-			ease: "Power1",
-			duration: 200,
-			delay: 0,
-		});
-	}
-
-	for (let i = 0; i < dealerHand.length; i++) {
-		scene.tweens.add({
-			targets: dealerHand[i],
-			x: 800 + i * cardOffsetX,
-			y: 180,
-			ease: "Power1",
-			duration: 200,
-			delay: 0,
-		});
-	}
-}
-
 // Build deck of cards
-function buildDeck(scene, deck) {
+function buildDeck(scene) {
+
+	let deck = []
+
 	const suits = ["hearts", "diamonds", "spades", "clubs"];
 	const ranks = [
 		"ace",
@@ -262,4 +55,206 @@ function buildDeck(scene, deck) {
 	deckBack.setDepth(1);
 
 	return deck;
+}
+
+function deal(scene) {
+	console.log("Dealing...");
+	scene.userHand.push(scene.deck.pop());
+	scene.userHand.push(scene.deck.pop());
+	scene.dealerHand.push(scene.deck.pop());
+	scene.dealerHand.push(scene.deck.pop());
+	console.log(scene.userHand)
+	console.log(scene.dealerHand)
+	console.log("Dealer's Hand Value: " + calculatePoints(scene.dealerHand));
+	console.log("Player's Hand Value: " + calculatePoints(scene.userHand));
+	animateCards(scene);
+	// scene.userHand.forEach((card) => console.log(card.data.list));
+	scene.userHand.forEach((card) => card.setInteractive({ draggable: true }));
+	scene.userHand.forEach((card, index) => card.setDepth(index));
+	scene.dealerHand.forEach((card, index) => card.setDepth(index));
+}
+
+// Calculate points of a hand
+function calculatePoints(hand) {
+	let points = 0;
+
+	// loops through hand argument and adds all card values together
+	for (let card of hand) {
+		points += card.data.list.value;
+	}
+	return points;
+}
+
+function checkAce(hand) {
+	console.log("checking ace");
+
+	if (hand.some((card) => card.data.rank === "Ace")) {
+		console.log("found an ace");
+		return true;
+	} else {
+		convertAce(hand);
+		return false;
+	}
+}
+
+function convertAce(hand) {
+	hand.map((card) => {
+		// only convert ace if hand is over 21
+		if (calculatePoints(hand) > 21) {
+			// Only convert ace if value is not already 1
+			if (card.data.rank == "Ace" && card.data.value != 1) {
+				console.log("Ace conversion called...");
+				card.value = 1;
+			}
+		}
+		return;
+	});
+}
+
+function gameplayLogic(scene) {
+	switch (true) {
+		case scene.userHand.hit == true && scene.dealerHand.hit == true:
+			scene.userHand.push(scene.deck.pop());
+			scene.dealerHand.push(scene.deck.pop());
+			break;
+		case scene.userHand.hit == true && scene.dealerHand.hit == false:
+			scene.userHand.push(scene.deck.pop());
+			break;
+		case scene.userHand.hit == false && scene.dealerHand.hit == true:
+			scene.dealerHand.push(scene.deck.pop());
+			break;
+	}
+	
+	animateCards(scene);
+}
+
+function checkHit(scene) {
+
+	const points = calculatePoints(scene.dealerHand);
+
+	if (points >= 21) {
+		scene.dealerHand.hit = false; // Bust - cannot hit
+	} else if (points >= 17) {
+		scene.dealerHand.hit = false; // Dealer stands on 17+
+	} else {
+		console.log('dealer hit')
+		scene.dealerHand.hit = true; // Can hit (player's choice or dealer must hit on <17)
+	}
+
+	gameplayLogic(scene)
+
+}
+
+function hit(scene) {
+	console.log("User Hit");
+	scene.userHand.hit = true;
+	checkHit(scene)
+	
+	console.log("Dealer's Hand Value: " + calculatePoints(scene.dealerHand));
+	console.log("Player's Hand Value: " + calculatePoints(scene.userHand));
+
+	checkBust(scene);
+}
+
+function stand(scene) {
+
+	scene.userHand.hit = false
+
+	checkHit(scene.userHand.hit, scene.dealerHand.hit, scene)
+
+	console.log("Dealer's Hand Value: " + calculatePoints(scene.dealerHand));
+	console.log("Player's Hand Value: " + calculatePoints(scene.userHand));
+	
+	checkBust(scene);
+}
+
+function animateCards(scene) {
+	const cardOffsetX = 80;
+
+	for (let i = 0; i < scene.userHand.length; i++) {
+		scene.tweens.add({
+			targets: scene.userHand[i],
+			x: 800 + i * cardOffsetX,
+			y: 900,
+			ease: "Power1",
+			duration: 200,
+			delay: 0,
+		});
+	}
+
+	for (let i = 0; i < scene.dealerHand.length; i++) {
+		scene.tweens.add({
+			targets: scene.dealerHand[i],
+			x: 800 + i * cardOffsetX,
+			y: 180,
+			ease: "Power1",
+			duration: 200,
+			delay: 0,
+		});
+	}
+
+	scene.userHand.forEach((card) => card.setInteractive({ draggable: true }));
+	scene.userHand.forEach((card, index) => card.setDepth(index));
+	scene.dealerHand.forEach((card, index) => card.setDepth(index));
+
+}
+
+// Check for bust or blackjack
+function checkBust(scene) {
+	if (calculatePoints(scene.userHand) > 21) {
+		bustText(scene.userHand, scene);
+	} else if (calculatePoints(scene.dealerHand) > 21) {
+		bustText(scene.dealerHand, scene);
+	}
+}
+
+function bustText(hand, scene) {
+
+	if (scene.bust == true) { return }
+	scene.bust = true
+
+	const textBackground = scene.add.graphics();
+
+	textBackground.fillStyle(0x000000, 0.7);
+
+	const centerX = 1920 / 2;
+	const centerY = 1080 / 2;
+	const width = 1300;
+	const height = 175;
+
+	textBackground.fillRoundedRect(
+		centerX - width / 2,
+		centerY - height / 2,
+		width,
+		height,
+		20
+	);
+
+	// Set depth so it appears below the text
+	textBackground.setDepth(99);
+
+	if (hand == scene.userHand) {
+		scene.add
+			.text(1920 / 2, 1080 / 2, "YOU HAVE BUST :(", {
+				fontFamily: "Noto Serif",
+				fontSize: 128,
+				color: "#FFFFFF",
+			})
+			.setDepth(100)
+			.setOrigin(0.5, 0.5);
+	} else {
+		scene.add
+			.text(1920 / 2, 1080 / 2, "DEALER HAS BUST", {
+				fontFamily: "Noto Serif",
+				fontSize: 128,
+				color: "#FFFFFF",
+			})
+			.setDepth(100)
+			.setOrigin(0.5, 0.5);
+	}
+
+	// restart after 2 seconds
+	scene.time.delayedCall(2000, () => {
+		scene.scene.restart()
+	});
 }

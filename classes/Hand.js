@@ -11,6 +11,8 @@ class Hand {
     this.targetX = x;
     this.targetY = y;
 
+    this.hit = null
+
     this.setupCursorEvents(scene, pointingTexture, openTexture);
     this.pointerMechanics(scene, openTexture, closedTexture, pointingTexture);
     this.setupDragMechanics(scene);

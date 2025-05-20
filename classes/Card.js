@@ -13,4 +13,4 @@ class Card extends Phaser.GameObjects.Sprite {
         // Add the sprite to the scene
         scene.add.existing(this);
     }
-}a
+}

@@ -4,20 +4,18 @@ class Blackjack extends Phaser.Scene {
     }
 
     init(data) {
-        // Access data passed from previous scene/restart
         this.gamesPlayed = data.gamesPlayed || 0;
         this.playerMoney = data.playerMoney || 1000; // Default starting money
         this.bet = data.bet
-        // ... other initializations
+        this.bust = false
+        this.userHand = []
+        this.userHand.hit = null;
+        this.dealerHand = []
+        this.dealerHand.hit = null;
+        this.deck = buildDeck(this)
     }
 
     create() {
-
-        // Reset game state variables
-        let bust = false;
-        userHand = [];
-        dealerHand = [];
-        deck = [];
         
         // Add background
         const bg = this.add.image(0, 0, "bg").setOrigin(0, 0);
@@ -62,10 +60,6 @@ class Blackjack extends Phaser.Scene {
             10,
             TEXTURES.BUTTONS.HIT,
             hit,
-            userHand,
-            deck,
-            dealerHand,
-            this
         );
 
         this.standButton = new Button(
@@ -76,14 +70,10 @@ class Blackjack extends Phaser.Scene {
             10,
             TEXTURES.BUTTONS.STAND,
             stand,
-            userHand,
-            deck,
-            dealerHand,
-            this
         );
 
         // Build the deck
-        this.deck = buildDeck(this, deck);
+        this.deck = buildDeck(this, this.deck);
 
         deal(this)
 
