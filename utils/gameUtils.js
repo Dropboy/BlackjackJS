@@ -160,8 +160,8 @@ function stand(scene) {
 
 	scene.userHand.hit = false
 
-	checkHit(scene.userHand.hit, scene.dealerHand.hit, scene)
-
+	checkHit(scene)
+	
 	console.log("Dealer's Hand Value: " + calculatePoints(scene.dealerHand));
 	console.log("Player's Hand Value: " + calculatePoints(scene.userHand));
 	
@@ -199,13 +199,77 @@ function animateCards(scene) {
 
 }
 
-// Check for bust or blackjack
+// rewrite function name to describe better - it currently checks for bust or winning
 function checkBust(scene) {
-	if (calculatePoints(scene.userHand) > 21) {
-		bustText(scene.userHand, scene);
-	} else if (calculatePoints(scene.dealerHand) > 21) {
-		bustText(scene.dealerHand, scene);
+
+	let userPoints = calculatePoints(scene.userHand)
+	let dealerPoints = calculatePoints(scene.dealerHand)
+
+	switch(true) {
+		case userPoints > 21:
+			bustText(scene.userHand, scene);
+			break;
+		case dealerPoints > 21:
+			bustText(scene.dealerHand, scene);
+			break;
+		case userPoints <= 21 && userPoints > dealerPoints && scene.userHand.hit == false:
+			winText(scene.userHand, scene)
+			break;
+		case dealerPoints <= 21 && dealerPoints > userPoints && scene.dealerHand.hit == false:
+			winText(scene.dealerHand, scene)
+			break;
 	}
+
+
+}
+
+function winText(hand, scene) {
+	if (scene.bust == true) { return }
+	scene.bust = true
+
+	const textBackground = scene.add.graphics();
+
+	textBackground.fillStyle(0x000000, 0.7);
+
+	const centerX = 1920 / 2;
+	const centerY = 1080 / 2;
+	const width = 1300;
+	const height = 175;
+
+	textBackground.fillRoundedRect(
+		centerX - width / 2,
+		centerY - height / 2,
+		width,
+		height,
+		20
+	);
+
+	// Set depth so it appears below the text
+	textBackground.setDepth(99);
+
+	if (hand == scene.userHand) {
+		scene.add
+			.text(1920 / 2, 1080 / 2, "YOU HAVE WON !! !", {
+				fontFamily: "Noto Serif",
+				fontSize: 128,
+				color: "#FFFFFF",
+			})
+			.setDepth(100)
+			.setOrigin(0.5, 0.5);
+	} else {
+		scene.add
+			.text(1920 / 2, 1080 / 2, "HOUSE ALWAYS WINS (-.-)y-°°°", {
+				fontFamily: "Noto Serif",
+				fontSize: 128,
+				color: "#FFFFFF",
+			})
+			.setDepth(100)
+			.setOrigin(0.5, 0.5);
+	}
+	
+	scene.time.delayedCall(2000, () => {
+		scene.scene.restart();
+  }, [], scene);
 }
 
 function bustText(hand, scene) {
@@ -253,8 +317,7 @@ function bustText(hand, scene) {
 			.setOrigin(0.5, 0.5);
 	}
 
-	// restart after 2 seconds
 	scene.time.delayedCall(2000, () => {
-		scene.scene.restart()
-	});
+		scene.scene.restart();
+  }, [], scene);
 }
